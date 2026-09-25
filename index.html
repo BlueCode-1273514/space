@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlueCode 的空间</title>
+    <title>我的空间 - BlueCode</title>
     <meta name="robots" content="noindex">
     <link rel="icon" href="picture/favicon.webp" type="image/webp">
     <style>
@@ -189,7 +189,6 @@
             margin: 6px 0;
         }
 
-        /* 底部操作栏：只有删除按钮 */
         .message-list .msg-actions {
             display: flex;
             align-items: center;
@@ -300,7 +299,7 @@
                 <textarea id="msgInput" placeholder="说点什么……支持 Markdown 和 LaTeX，按 Ctrl+Enter 发送"></textarea>
                 <button onclick="sendMessage()">发送</button>
             </div>
-            <div class="tip">发送和删除时都会弹窗要求输入密码，所以请其他人不要乱动</div>
+            <div class="tip">发送和删除时都会弹窗要求输入密码</div>
         </div>
     </div>
 
@@ -317,7 +316,7 @@
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 
     <script>
-        var PASSWORD_HASH = '00907874d84d304b3421501b0d856d27849de5dc6f287cce53d784e5a4ee126d';
+        var PASSWORD_HASH = '你的SHA256哈希值';
 
         var STORAGE_KEY = 'bluecode_messages';
         var AVATAR_SRC = 'picture/picture.webp';
@@ -376,6 +375,22 @@
             return html;
         }
 
+        // 修正没有协议头的链接
+        function fixLinks(container) {
+            var links = container.querySelectorAll('a');
+            for (var i = 0; i < links.length; i++) {
+                var href = links[i].getAttribute('href');
+                if (!href) continue;
+                // 如果链接不是 http://、https://、//、/、# 开头，就补上 https://
+                if (!/^(https?:)?\/\//.test(href) && href.charAt(0) !== '/' && href.charAt(0) !== '#') {
+                    links[i].setAttribute('href', 'https://' + href);
+                }
+                // 所有外链都在新标签页打开，并加上安全属性
+                links[i].setAttribute('target', '_blank');
+                links[i].setAttribute('rel', 'noopener noreferrer');
+            }
+        }
+
         function typesetMath(element) {
             if (window.MathJax && window.MathJax.typesetPromise) {
                 MathJax.typesetPromise([element]).catch(function() {});
@@ -411,6 +426,9 @@
                     var contentDiv = document.createElement('div');
                     contentDiv.className = 'msg-text';
                     contentDiv.innerHTML = renderContent(item.text);
+
+                    // 修正链接
+                    fixLinks(contentDiv);
 
                     var actions = document.createElement('div');
                     actions.className = 'msg-actions';
