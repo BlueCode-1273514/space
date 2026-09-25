@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的空间 - BlueCode</title>
+    <meta name="robots" content="noindex">
+    <link rel="icon" href="picture/favicon.webp" type="image/webp">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #a8cfff;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 15% 10%, rgba(255, 255, 255, 0.95), transparent 42%),
+                radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.55), transparent 38%),
+                radial-gradient(circle at 88% 90%, rgba(255, 255, 255, 0.45), transparent 40%),
+                linear-gradient(135deg, #9fc7ff, #b8dcff);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+            background-size: 36px 36px;
+            pointer-events: none;
+            z-index: 0;
+            -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 55%, transparent 100%);
+            mask-image: radial-gradient(circle at 50% 50%, #000 55%, transparent 100%);
+        }
+
+        .panel {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 600px;
+            background: #fff;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow:
+                0 1px 2px rgba(0, 0, 0, 0.04),
+                0 12px 32px rgba(31, 64, 120, 0.16),
+                0 2px 8px rgba(31, 64, 120, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .panel-header {
+            padding: 20px 26px;
+            border-bottom: 1px solid #eef3f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .panel-header h1 {
+            font-size: 18px;
+            color: #2c3e50;
+            font-weight: 700;
+        }
+
+        .panel-header .count {
+            font-size: 12px;
+            color: #95a5a6;
+        }
+
+        .panel-body {
+            padding: 20px 26px 26px;
+        }
+
+        .message-list {
+            list-style: none;
+            max-height: 420px;
+            overflow-y: auto;
+            margin-bottom: 18px;
+            padding-right: 4px;
+        }
+
+        .message-list li {
+            display: flex;
+            gap: 10px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f5f5f5;
+            word-break: break-word;
+            align-items: flex-start;
+        }
+
+        .message-list li:last-child {
+            border-bottom: none;
+        }
+
+        .message-list .msg-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(102, 126, 234, 0.25);
+        }
+
+        .message-list .msg-main {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .message-list .msg-meta {
+            font-size: 12px;
+            color: #b0b8c1;
+            margin-bottom: 4px;
+        }
+
+        .message-list .msg-text {
+            font-size: 14px;
+            color: #34495e;
+            line-height: 1.7;
+            white-space: pre-wrap;
+        }
+
+        .message-list .msg-text p {
+            margin-bottom: 6px;
+        }
+
+        .message-list .msg-text p:last-child {
+            margin-bottom: 0;
+        }
+
+        .message-list .msg-text code {
+            background: #f0f2f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 13px;
+        }
+
+        .message-list .msg-text pre {
+            background: #f8f9fb;
+            padding: 10px 12px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 6px 0;
+        }
+
+        .message-list .msg-text pre code {
+            background: none;
+            padding: 0;
+        }
+
+        .message-list .msg-text blockquote {
+            border-left: 3px solid #dfe6ee;
+            padding-left: 10px;
+            color: #7f8c8d;
+            margin: 6px 0;
+        }
+
+        .message-list .msg-text a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .message-list .msg-text a:hover {
+            text-decoration: underline;
+        }
+
+        .message-list .msg-text ul,
+        .message-list .msg-text ol {
+            padding-left: 22px;
+            margin: 6px 0;
+        }
+
+        /* 底部操作栏：只有删除按钮 */
+        .message-list .msg-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            margin-top: 8px;
+        }
+
+        .message-list .msg-delete {
+            width: 24px;
+            height: 24px;
+            border: none;
+            border-radius: 50%;
+            background: #f0f2f5;
+            color: #95a5a6;
+            font-size: 14px;
+            line-height: 1;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .message-list .msg-delete:hover {
+            background: #ff6b6b;
+            color: #fff;
+        }
+
+        .message-list .empty {
+            display: block;
+            color: #b0b8c1;
+            font-style: italic;
+            padding: 10px 0;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+        }
+
+        .input-row textarea {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid #e0e6ed;
+            border-radius: 4px;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+            min-width: 0;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 42px;
+            max-height: 160px;
+            line-height: 1.5;
+        }
+
+        .input-row textarea:focus {
+            border-color: #4facfe;
+        }
+
+        .input-row button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            background: #4facfe;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            flex-shrink: 0;
+            height: 42px;
+        }
+
+        .input-row button:hover {
+            background: #2f9bfe;
+        }
+
+        .tip {
+            font-size: 12px;
+            color: #95a5a6;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 620px) {
+            .panel-body {
+                padding: 18px 20px 22px;
+            }
+            .panel-header {
+                padding: 18px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="panel">
+        <div class="panel-header">
+            <h1>我的空间</h1>
+            <span class="count" id="msgCount">0 条</span>
+        </div>
+        <div class="panel-body">
+            <ul class="message-list" id="messageList">
+                <li class="empty">还没有消息，点下方按钮发第一条吧。</li>
+            </ul>
+            <div class="input-row">
+                <textarea id="msgInput" placeholder="说点什么……支持 Markdown 和 LaTeX，按 Ctrl+Enter 发送"></textarea>
+                <button onclick="sendMessage()">发送</button>
+            </div>
+            <div class="tip">发送和删除时都会弹窗要求输入密码</div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+    <script>
+        var PASSWORD_HASH = '00907874d84d304b3421501b0d856d27849de5dc6f287cce53d784e5a4ee126d';
+
+        var STORAGE_KEY = 'bluecode_messages';
+        var AVATAR_SRC = 'picture/picture.webp';
+
+        function loadMessages() {
+            try {
+                var data = localStorage.getItem(STORAGE_KEY);
+                return data ? JSON.parse(data) : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveMessages(list) {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+            } catch (e) {}
+        }
+
+        function sha256(text) {
+            var encoder = new TextEncoder();
+            var data = encoder.encode(text);
+            return crypto.subtle.digest('SHA-256', data).then(function(buffer) {
+                var bytes = new Uint8Array(buffer);
+                var hex = '';
+                for (var i = 0; i < bytes.length; i++) {
+                    hex += bytes[i].toString(16).padStart(2, '0');
+                }
+                return hex;
+            });
+        }
+
+        function askPassword(actionText) {
+            var password = prompt('请输入密码以' + actionText + '：');
+            if (password === null) {
+                return Promise.resolve(false);
+            }
+            return sha256(password).then(function(hash) {
+                if (hash === PASSWORD_HASH) {
+                    return true;
+                }
+                alert('密码不正确。');
+                return false;
+            });
+        }
+
+        function formatTime(ts) {
+            var d = new Date(ts);
+            var pad = function(n) { return n < 10 ? '0' + n : n; };
+            return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate())
+                + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+        }
+
+        function renderContent(text) {
+            var html = marked.parse(text);
+            return html;
+        }
+
+        function typesetMath(element) {
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise([element]).catch(function() {});
+            }
+        }
+
+        function renderMessages() {
+            var list = loadMessages();
+            var ul = document.getElementById('messageList');
+            var count = document.getElementById('msgCount');
+            ul.innerHTML = '';
+
+            if (list.length === 0) {
+                ul.innerHTML = '<li class="empty">还没有消息，点下方按钮发第一条吧。</li>';
+            } else {
+                for (var i = list.length - 1; i >= 0; i--) {
+                    var item = list[i];
+
+                    var li = document.createElement('li');
+
+                    var img = document.createElement('img');
+                    img.className = 'msg-avatar';
+                    img.src = AVATAR_SRC;
+                    img.alt = '头像';
+
+                    var main = document.createElement('div');
+                    main.className = 'msg-main';
+
+                    var meta = document.createElement('div');
+                    meta.className = 'msg-meta';
+                    meta.textContent = formatTime(item.time || Date.now());
+
+                    var contentDiv = document.createElement('div');
+                    contentDiv.className = 'msg-text';
+                    contentDiv.innerHTML = renderContent(item.text);
+
+                    var actions = document.createElement('div');
+                    actions.className = 'msg-actions';
+
+                    var delBtn = document.createElement('button');
+                    delBtn.className = 'msg-delete';
+                    delBtn.textContent = '×';
+                    delBtn.title = '删除这条消息';
+                    (function(id) {
+                        delBtn.onclick = function() {
+                            deleteMessage(id);
+                        };
+                    })(item.id);
+
+                    actions.appendChild(delBtn);
+
+                    main.appendChild(meta);
+                    main.appendChild(contentDiv);
+                    main.appendChild(actions);
+
+                    li.appendChild(img);
+                    li.appendChild(main);
+                    ul.appendChild(li);
+
+                    typesetMath(contentDiv);
+                }
+            }
+
+            count.textContent = list.length + ' 条';
+        }
+
+        function sendMessage() {
+            var msgInput = document.getElementById('msgInput');
+            var content = msgInput.value.trim();
+
+            if (content === '') {
+                alert('消息不能为空。');
+                return;
+            }
+
+            askPassword('发送消息').then(function(ok) {
+                if (!ok) return;
+                var list = loadMessages();
+                list.push({
+                    id: Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+                    text: content,
+                    time: Date.now()
+                });
+                saveMessages(list);
+                renderMessages();
+                msgInput.value = '';
+            });
+        }
+
+        function deleteMessage(id) {
+            askPassword('删除消息').then(function(ok) {
+                if (!ok) return;
+                var list = loadMessages();
+                list = list.filter(function(item) {
+                    return item.id !== id;
+                });
+                saveMessages(list);
+                renderMessages();
+            });
+        }
+
+        document.getElementById('msgInput').addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        renderMessages();
+    </script>
+
+</body>
+</html>
