@@ -392,7 +392,10 @@
                 SUPABASE_URL + '/functions/v1/send-message',
                 {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + SUPABASE_KEY
+                    },
                     body: JSON.stringify({ password: password, content: content })
                 }
             );
@@ -416,7 +419,10 @@
                 SUPABASE_URL + '/functions/v1/delete-message',
                 {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + SUPABASE_KEY
+                    },
                     body: JSON.stringify({ password: password, id: id })
                 }
             );
