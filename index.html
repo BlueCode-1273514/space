@@ -5,14 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BlueCode 的空间</title>
     <meta name="robots" content="noindex">
-    <link rel="icon" href="picture/picture.webp" type="image/webp">
+    <link rel="icon" href="picture/favicon.webp" type="image/webp">
     <link rel="apple-touch-icon" href="picture/picture.webp">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
@@ -76,20 +72,9 @@
             justify-content: space-between;
         }
 
-        .panel-header h1 {
-            font-size: 18px;
-            color: #2c3e50;
-            font-weight: 700;
-        }
-
-        .panel-header .count {
-            font-size: 12px;
-            color: #95a5a6;
-        }
-
-        .panel-body {
-            padding: 20px 26px 26px;
-        }
+        .panel-header h1 { font-size: 18px; color: #2c3e50; font-weight: 700; }
+        .panel-header .count { font-size: 12px; color: #95a5a6; }
+        .panel-body { padding: 20px 26px 26px; }
 
         .message-list {
             list-style: none;
@@ -108,9 +93,7 @@
             align-items: flex-start;
         }
 
-        .message-list li:last-child {
-            border-bottom: none;
-        }
+        .message-list li:last-child { border-bottom: none; }
 
         .message-list .msg-avatar {
             width: 36px;
@@ -121,16 +104,8 @@
             box-shadow: 0 2px 6px rgba(102, 126, 234, 0.25);
         }
 
-        .message-list .msg-main {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .message-list .msg-meta {
-            font-size: 12px;
-            color: #b0b8c1;
-            margin-bottom: 4px;
-        }
+        .message-list .msg-main { flex: 1; min-width: 0; }
+        .message-list .msg-meta { font-size: 12px; color: #b0b8c1; margin-bottom: 4px; }
 
         .message-list .msg-text {
             font-size: 14px;
@@ -139,13 +114,8 @@
             white-space: pre-wrap;
         }
 
-        .message-list .msg-text p {
-            margin-bottom: 6px;
-        }
-
-        .message-list .msg-text p:last-child {
-            margin-bottom: 0;
-        }
+        .message-list .msg-text p { margin-bottom: 6px; }
+        .message-list .msg-text p:last-child { margin-bottom: 0; }
 
         .message-list .msg-text code {
             background: #f0f2f5;
@@ -163,10 +133,7 @@
             margin: 6px 0;
         }
 
-        .message-list .msg-text pre code {
-            background: none;
-            padding: 0;
-        }
+        .message-list .msg-text pre code { background: none; padding: 0; }
 
         .message-list .msg-text blockquote {
             border-left: 3px solid #dfe6ee;
@@ -175,20 +142,10 @@
             margin: 6px 0;
         }
 
-        .message-list .msg-text a {
-            color: #3498db;
-            text-decoration: none;
-        }
-
-        .message-list .msg-text a:hover {
-            text-decoration: underline;
-        }
-
+        .message-list .msg-text a { color: #3498db; text-decoration: none; }
+        .message-list .msg-text a:hover { text-decoration: underline; }
         .message-list .msg-text ul,
-        .message-list .msg-text ol {
-            padding-left: 22px;
-            margin: 6px 0;
-        }
+        .message-list .msg-text ol { padding-left: 22px; margin: 6px 0; }
 
         .message-list .msg-actions {
             display: flex;
@@ -213,10 +170,7 @@
             justify-content: center;
         }
 
-        .message-list .msg-delete:hover {
-            background: #ff6b6b;
-            color: #fff;
-        }
+        .message-list .msg-delete:hover { background: #ff6b6b; color: #fff; }
 
         .message-list .empty {
             display: block;
@@ -225,11 +179,7 @@
             padding: 10px 0;
         }
 
-        .input-row {
-            display: flex;
-            gap: 8px;
-            align-items: flex-end;
-        }
+        .input-row { display: flex; gap: 8px; align-items: flex-end; }
 
         .input-row textarea {
             flex: 1;
@@ -247,9 +197,7 @@
             line-height: 1.5;
         }
 
-        .input-row textarea:focus {
-            border-color: #4facfe;
-        }
+        .input-row textarea:focus { border-color: #4facfe; }
 
         .input-row button {
             padding: 10px 20px;
@@ -265,23 +213,13 @@
             height: 42px;
         }
 
-        .input-row button:hover {
-            background: #2f9bfe;
-        }
+        .input-row button:hover { background: #2f9bfe; }
 
-        .tip {
-            font-size: 12px;
-            color: #95a5a6;
-            margin-top: 10px;
-        }
+        .tip { font-size: 12px; color: #95a5a6; margin-top: 10px; }
 
         @media (max-width: 620px) {
-            .panel-body {
-                padding: 18px 20px 22px;
-            }
-            .panel-header {
-                padding: 18px 20px;
-            }
+            .panel-body { padding: 18px 20px 22px; }
+            .panel-header { padding: 18px 20px; }
         }
     </style>
 </head>
@@ -304,6 +242,7 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
     <script>
         window.MathJax = {
@@ -317,76 +256,34 @@
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 
     <script>
-        var PASSWORD_HASH = '00907874d84d304b3421501b0d856d27849de5dc6f287cce53d784e5a4ee126d';
+        // ===== 配置 =====
+        var SUPABASE_URL = 'https://nnekudnbordbvikklfci.supabase.co/rest/v1/';
+        var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5uZWt1ZG5ib3JkYnZpa2tsZmNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA0MDU3MTMsImV4cCI6MjEwNTk4MTcxM30.1dlBtek7UJLCSlhCqXFN0Gox7AF58h05TCbO_ePH2qc';
+        var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        var STORAGE_KEY = 'bluecode_messages';
         var AVATAR_SRC = 'picture/picture.webp';
 
-        function loadMessages() {
-            try {
-                var data = localStorage.getItem(STORAGE_KEY);
-                return data ? JSON.parse(data) : [];
-            } catch (e) {
-                return [];
-            }
-        }
-
-        function saveMessages(list) {
-            try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-            } catch (e) {}
-        }
-
-        function sha256(text) {
-            var encoder = new TextEncoder();
-            var data = encoder.encode(text);
-            return crypto.subtle.digest('SHA-256', data).then(function(buffer) {
-                var bytes = new Uint8Array(buffer);
-                var hex = '';
-                for (var i = 0; i < bytes.length; i++) {
-                    hex += bytes[i].toString(16).padStart(2, '0');
-                }
-                return hex;
-            });
-        }
-
-        function askPassword(actionText) {
-            var password = prompt('请输入密码以' + actionText + '：');
-            if (password === null) {
-                return Promise.resolve(false);
-            }
-            return sha256(password).then(function(hash) {
-                if (hash === PASSWORD_HASH) {
-                    return true;
-                }
-                alert('密码不正确。');
-                return false;
-            });
-        }
+        // ===== 工具函数 =====
 
         function formatTime(ts) {
-            var d = new Date(ts);
+            var d = new Date(Number(ts));
             var pad = function(n) { return n < 10 ? '0' + n : n; };
             return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate())
                 + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
         }
 
         function renderContent(text) {
-            var html = marked.parse(text);
-            return html;
+            return marked.parse(text);
         }
 
-        // 修正没有协议头的链接
         function fixLinks(container) {
             var links = container.querySelectorAll('a');
             for (var i = 0; i < links.length; i++) {
                 var href = links[i].getAttribute('href');
                 if (!href) continue;
-                // 如果链接不是 http://、https://、//、/、# 开头，就补上 https://
                 if (!/^(https?:)?\/\//.test(href) && href.charAt(0) !== '/' && href.charAt(0) !== '#') {
                     links[i].setAttribute('href', 'https://' + href);
                 }
-                // 所有外链都在新标签页打开，并加上安全属性
                 links[i].setAttribute('target', '_blank');
                 links[i].setAttribute('rel', 'noopener noreferrer');
             }
@@ -398,8 +295,25 @@
             }
         }
 
-        function renderMessages() {
-            var list = loadMessages();
+        // ===== 数据操作 =====
+
+        async function loadMessages() {
+            var result = await supabase
+                .from('messages')
+                .select('*')
+                .order('time', { ascending: false });
+
+            if (result.error) {
+                console.error('读取失败：', result.error);
+                return [];
+            }
+            return result.data || [];
+        }
+
+        // ===== 渲染 =====
+
+        async function renderMessages() {
+            var list = await loadMessages();
             var ul = document.getElementById('messageList');
             var count = document.getElementById('msgCount');
             ul.innerHTML = '';
@@ -407,7 +321,7 @@
             if (list.length === 0) {
                 ul.innerHTML = '<li class="empty">还没有消息，点下方按钮发第一条吧。</li>';
             } else {
-                for (var i = list.length - 1; i >= 0; i--) {
+                for (var i = 0; i < list.length; i++) {
                     var item = list[i];
 
                     var li = document.createElement('li');
@@ -422,13 +336,12 @@
 
                     var meta = document.createElement('div');
                     meta.className = 'msg-meta';
-                    meta.textContent = formatTime(item.time || Date.now());
+                    meta.textContent = formatTime(item.time);
 
                     var contentDiv = document.createElement('div');
                     contentDiv.className = 'msg-text';
-                    contentDiv.innerHTML = renderContent(item.text);
+                    contentDiv.innerHTML = renderContent(item.content);
 
-                    // 修正链接
                     fixLinks(contentDiv);
 
                     var actions = document.createElement('div');
@@ -461,7 +374,9 @@
             count.textContent = list.length + ' 条';
         }
 
-        function sendMessage() {
+        // ===== 发送 / 删除 =====
+
+        async function sendMessage() {
             var msgInput = document.getElementById('msgInput');
             var content = msgInput.value.trim();
 
@@ -470,31 +385,53 @@
                 return;
             }
 
-            askPassword('发送消息').then(function(ok) {
-                if (!ok) return;
-                var list = loadMessages();
-                list.push({
-                    id: Date.now() + '_' + Math.random().toString(36).slice(2, 8),
-                    text: content,
-                    time: Date.now()
-                });
-                saveMessages(list);
-                renderMessages();
-                msgInput.value = '';
-            });
+            var password = prompt('请输入密码以发送消息：');
+            if (password === null) return;
+
+            var response = await fetch(
+                SUPABASE_URL + '/functions/v1/send-message',
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: password, content: content })
+                }
+            );
+
+            var result = await response.json();
+
+            if (!response.ok) {
+                alert(result.error || '发送失败');
+                return;
+            }
+
+            msgInput.value = '';
+            renderMessages();
         }
 
-        function deleteMessage(id) {
-            askPassword('删除消息').then(function(ok) {
-                if (!ok) return;
-                var list = loadMessages();
-                list = list.filter(function(item) {
-                    return item.id !== id;
-                });
-                saveMessages(list);
-                renderMessages();
-            });
+        async function deleteMessage(id) {
+            var password = prompt('请输入密码以删除消息：');
+            if (password === null) return;
+
+            var response = await fetch(
+                SUPABASE_URL + '/functions/v1/delete-message',
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: password, id: id })
+                }
+            );
+
+            var result = await response.json();
+
+            if (!response.ok) {
+                alert(result.error || '删除失败');
+                return;
+            }
+
+            renderMessages();
         }
+
+        // ===== 事件绑定 =====
 
         document.getElementById('msgInput').addEventListener('keydown', function(e) {
             if (e.ctrlKey && e.key === 'Enter') {
