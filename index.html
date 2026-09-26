@@ -147,6 +147,24 @@
         .message-list .msg-text ul,
         .message-list .msg-text ol { padding-left: 22px; margin: 6px 0; }
 
+        /* 加密评论 */
+        .message-list .msg-encrypted {
+            padding: 10px 14px;
+            background: #f8faff;
+            border: 1px dashed #c8d8f0;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #7f8c8d;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .message-list .msg-encrypted:hover {
+            background: #eef4ff;
+            border-color: #4facfe;
+            color: #4facfe;
+        }
+
         .message-list .msg-actions {
             display: flex;
             align-items: center;
@@ -215,6 +233,21 @@
 
         .input-row button:hover { background: #2f9bfe; }
 
+        .encrypt-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #95a5a6;
+            margin-top: 8px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .encrypt-toggle input {
+            cursor: pointer;
+        }
+
         .tip { font-size: 12px; color: #95a5a6; margin-top: 10px; }
 
         @media (max-width: 620px) {
@@ -238,6 +271,10 @@
                 <textarea id="msgInput" placeholder="说点什么……支持 Markdown 和 LaTeX，按 Ctrl+Enter 发送"></textarea>
                 <button onclick="sendMessage()">发送</button>
             </div>
+            <label class="encrypt-toggle">
+                <input type="checkbox" id="encryptCheck">
+                加密这条评论（其他人需要输入密码才能查看）
+            </label>
             <div class="tip">发送和删除时都会弹窗要求输入密码，所以请其他人不要乱动</div>
         </div>
     </div>
@@ -263,7 +300,23 @@
 
         var AVATAR_SRC = 'picture/picture.webp';
 
+        // 查看加密评论的密码哈希（和发送密码相同）
+        var VIEW_PASSWORD_HASH = '你的SHA256哈希值';
+
         // ===== 工具函数 =====
+
+        function sha256(text) {
+            var encoder = new TextEncoder();
+            var data = encoder.encode(text);
+            return crypto.subtle.digest('SHA-256', data).then(function(buffer) {
+                var bytes = new Uint8Array(buffer);
+                var hex = '';
+                for (var i = 0; i < bytes.length; i++) {
+                    hex += bytes[i].toString(16).padStart(2, '0');
+                }
+                return hex;
+            });
+        }
 
         function formatTime(ts) {
             var d = new Date(Number(ts));
@@ -310,6 +363,29 @@
             return result.data || [];
         }
 
+        // ===== 查看加密评论 =====
+
+        async function viewEncrypted(id, encryptedContent) {
+            var password = prompt('请输入密码以查看加密评论：');
+            if (password === null) return;
+
+            var hash = await sha256(password);
+            if (hash !== VIEW_PASSWORD_HASH) {
+                alert('密码不正确。');
+                return;
+            }
+
+            var contentDiv = document.getElementById('encrypted-' + id);
+            if (contentDiv) {
+                contentDiv.outerHTML = '<div class="msg-text" id="decrypted-' + id + '">' + renderContent(encryptedContent) + '</div>';
+                var newDiv = document.getElementById('decrypted-' + id);
+                if (newDiv) {
+                    fixLinks(newDiv);
+                    typesetMath(newDiv);
+                }
+            }
+        }
+
         // ===== 渲染 =====
 
         async function renderMessages() {
@@ -339,10 +415,22 @@
                     meta.textContent = formatTime(item.time);
 
                     var contentDiv = document.createElement('div');
-                    contentDiv.className = 'msg-text';
-                    contentDiv.innerHTML = renderContent(item.content);
 
-                    fixLinks(contentDiv);
+                    if (item.encrypted && item.encrypted_content) {
+                        contentDiv.className = 'msg-encrypted';
+                        contentDiv.id = 'encrypted-' + item.id;
+                        contentDiv.textContent = '这条评论已加密，点击查看';
+                        (function(id, content) {
+                            contentDiv.onclick = function() {
+                                viewEncrypted(id, content);
+                            };
+                        })(item.id, item.encrypted_content);
+                    } else {
+                        contentDiv.className = 'msg-text';
+                        contentDiv.innerHTML = renderContent(item.content);
+                        fixLinks(contentDiv);
+                        typesetMath(contentDiv);
+                    }
 
                     var actions = document.createElement('div');
                     actions.className = 'msg-actions';
@@ -366,8 +454,6 @@
                     li.appendChild(img);
                     li.appendChild(main);
                     ul.appendChild(li);
-
-                    typesetMath(contentDiv);
                 }
             }
 
@@ -378,6 +464,7 @@
 
         async function sendMessage() {
             var msgInput = document.getElementById('msgInput');
+            var encryptCheck = document.getElementById('encryptCheck');
             var content = msgInput.value.trim();
 
             if (content === '') {
@@ -388,6 +475,11 @@
             var password = prompt('请输入密码以发送消息：');
             if (password === null) return;
 
+            var payload = { password: password, content: content };
+            if (encryptCheck.checked) {
+                payload.encrypted = true;
+            }
+
             var response = await fetch(
                 SUPABASE_URL + '/functions/v1/send-message',
                 {
@@ -396,7 +488,7 @@
                         'Content-Type': 'application/json',
                         'Authorization': 'Bearer ' + SUPABASE_KEY
                     },
-                    body: JSON.stringify({ password: password, content: content })
+                    body: JSON.stringify(payload)
                 }
             );
 
@@ -408,6 +500,7 @@
             }
 
             msgInput.value = '';
+            encryptCheck.checked = false;
             renderMessages();
         }
 
